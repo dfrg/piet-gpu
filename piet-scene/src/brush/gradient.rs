@@ -50,7 +50,7 @@ pub enum Extend {
     Reflect,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct LinearGradient {
     pub start: Point,
     pub end: Point,
@@ -58,7 +58,7 @@ pub struct LinearGradient {
     pub extend: Extend,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct RadialGradient {
     pub center0: Point,
     pub radius0: f32,
@@ -68,7 +68,7 @@ pub struct RadialGradient {
     pub extend: Extend,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct SweepGradient {
     pub center: Point,
     pub start_angle: f32,

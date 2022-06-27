@@ -92,5 +92,11 @@ impl Image {
     }
 }
 
+impl PartialEq for Image {
+    fn eq(&self, other: &Self) -> bool {
+        self.id() == other.id()
+    }
+}
+
 #[derive(Clone, Debug)]
 pub struct DataSizeError;

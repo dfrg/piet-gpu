@@ -24,7 +24,7 @@ pub use image::*;
 
 use crate::resource::PersistentBrush;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum Brush {
     Solid(Color),
     LinearGradient(LinearGradient),
@@ -32,4 +32,10 @@ pub enum Brush {
     SweepGradient(SweepGradient),
     Image(Image),
     Persistent(PersistentBrush),
+}
+
+impl Default for Brush {
+    fn default() -> Self {
+        Self::Solid(Color::default())
+    }
 }

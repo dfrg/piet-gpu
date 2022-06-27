@@ -1,13 +1,15 @@
 mod render;
 mod test_scenes;
+mod text;
 
-use druid_shell::kurbo::{Rect, Size};
+use druid_shell::kurbo::Size;
 use druid_shell::{
-    Application, Cursor, FileDialogToken, FileInfo, IdleToken, KeyEvent, MouseEvent, Region, TimerToken,
-    WinHandler, WindowHandle, Scalable,
+    Application, Cursor, FileDialogToken, FileInfo, IdleToken, KeyEvent, MouseEvent, Region,
+    Scalable, TimerToken, WinHandler, WindowHandle,
 };
-use piet_scene::scene::Scene;
+use parley::FontContext;
 use piet_scene::resource::ResourceContext;
+use piet_scene::scene::Scene;
 use std::any::Any;
 
 const WIDTH: usize = 2048;
@@ -18,25 +20,39 @@ fn main() {
     let mut window_builder = druid_shell::WindowBuilder::new(app.clone());
     window_builder.resizable(false);
     window_builder.set_size((WIDTH as f64 / 2., HEIGHT as f64 / 2.).into());
-    window_builder.set_handler(Box::new(WindowState::default()));
+    window_builder.set_handler(Box::new(WindowState::new()));
     let window_handle = window_builder.build().unwrap();
     window_handle.show();
     app.run(None);
 }
 
-#[derive(Default)]
 struct WindowState {
     handle: WindowHandle,
     pgpu_state: Option<render::PgpuState>,
     scene: Scene,
     resource_context: ResourceContext,
+    font_context: FontContext,
     counter: u64,
 }
 
 impl WindowState {
+    pub fn new() -> Self {
+        Self {
+            handle: Default::default(),
+            pgpu_state: None,
+            scene: Default::default(),
+            resource_context: Default::default(),
+            font_context: FontContext::new(),
+            counter: 0,
+        }
+    }
+
     #[cfg(target_os = "macos")]
     fn schedule_render(&self) {
-        self.handle.get_idle_handle().unwrap().schedule_idle(IdleToken::new(0));
+        self.handle
+            .get_idle_handle()
+            .unwrap()
+            .schedule_idle(IdleToken::new(0));
     }
 
     #[cfg(not(target_os = "macos"))]
@@ -51,20 +67,25 @@ impl WindowState {
             let insets = handle.content_insets().to_px(scale);
             let mut size = handle.get_size().to_px(scale);
             size.width -= insets.x_value();
-            size.height -= insets.y_value();            
+            size.height -= insets.y_value();
             println!("render size: {:?}", size);
-            self.pgpu_state = Some(render::PgpuState::new(handle, size.width as usize, size.height as usize).unwrap());
+            self.pgpu_state = Some(
+                render::PgpuState::new(handle, size.width as usize, size.height as usize).unwrap(),
+            );
         }
         if let Some(pgpu_state) = self.pgpu_state.as_mut() {
-            if let Some(_timestamps) = pgpu_state.pre_render() {
-
-            }
+            if let Some(_timestamps) = pgpu_state.pre_render() {}
             self.resource_context.advance();
-            test_scenes::render(&mut self.scene, &mut self.resource_context, 0, self.counter);
+            test_scenes::render(
+                &mut self.font_context,
+                &mut self.scene,
+                &mut self.resource_context,
+                0,
+                self.counter,
+            );
             self.counter += 1;
             pgpu_state.render(&self.scene, &self.resource_context);
         }
-
     }
 }
 
@@ -116,7 +137,6 @@ impl WinHandler for WindowState {
 
     fn mouse_down(&mut self, event: &MouseEvent) {
         println!("mouse_down {:?}", event);
-        self.handle.invalidate();
     }
 
     fn mouse_up(&mut self, event: &MouseEvent) {
@@ -151,4 +171,3 @@ impl WinHandler for WindowState {
         self
     }
 }
-

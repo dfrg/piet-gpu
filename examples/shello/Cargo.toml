@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-druid-shell = { path = "../../../druid_unpiet/druid-shell" }
+druid-shell = { git = "https://github.com/dfrg/druid/", rev = "341a8ba" }
 piet-gpu-hal = { path = "../../piet-gpu-hal" }
 piet-gpu = { path = "../../piet-gpu" }
 piet-scene = { path = "../../piet-scene" }
@@ -14,3 +14,4 @@ rand = "0.7.3"
 roxmltree = "0.13"
 swash = "0.1.4"
 bytemuck = { version = "1.7.2", features = ["derive"] }
+parley = { git = "https://github.com/dfrg/parley" }

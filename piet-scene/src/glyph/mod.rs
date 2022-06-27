@@ -81,14 +81,17 @@ pub struct GlyphProvider<'a> {
 impl<'a> GlyphProvider<'a> {
     /// Returns a scene fragment containing the commands to render the
     /// specified glyph.
-    pub fn get(&mut self, gid: u16) -> Option<Fragment> {
+    pub fn get(&mut self, gid: u16, brush: Option<&Brush>) -> Option<Fragment> {
         let glyph = self.scaler.glyph(gid)?;
         let path = glyph.path(0)?;
         let mut fragment = Fragment::default();
-        let mut builder = build_fragment(&mut fragment);
+        if path.points.is_empty() {
+            return Some(fragment);
+        }
+        let mut builder = build_fragment(&mut fragment);        
         builder.fill(
             Fill::NonZero,
-            &Brush::Solid(Color::rgb8(255, 255, 255)),
+            brush.unwrap_or(&Brush::Solid(Color::rgb8(255, 255, 255))),
             None,
             convert_path(path.elements()),
         );
