@@ -30,33 +30,34 @@ struct WindowState {
     pgpu_state: Option<render::PgpuState>,
     scene: Scene,
     resource_context: ResourceContext,
+    counter: u64,
 }
 
 impl WinHandler for WindowState {
     fn connect(&mut self, handle: &WindowHandle) {
-        let scale = handle.get_scale().unwrap();
-        let insets = handle.content_insets().to_px(scale);
-        let mut size = handle.get_size().to_px(scale);
-        size.width -= insets.x_value();
-        size.height -= insets.y_value();
-        println!("size: {:?}", size);
-        self.pgpu_state = Some(render::PgpuState::new(handle, size.width as usize, size.height as usize).unwrap());
         self.handle = handle.clone();
     }
 
     fn prepare_paint(&mut self) {}
 
     fn paint(&mut self, _: &Region) {
-        // let rect = self.size.to_rect();
-        // piet.fill(rect, &BG_COLOR);
-        // piet.stroke(Line::new((10.0, 50.0), (90.0, 90.0)), &FG_COLOR, 1.0);
+        if self.pgpu_state.is_none() {
+            let handle = &self.handle;
+            let scale = handle.get_scale().unwrap();
+            let insets = handle.content_insets().to_px(scale);
+            let mut size = handle.get_size().to_px(scale);
+            size.width -= insets.x_value();
+            size.height -= insets.y_value();            
+            println!("render size: {:?}", size);
+            self.pgpu_state = Some(render::PgpuState::new(handle, size.width as usize, size.height as usize).unwrap());
+        }
         if let Some(pgpu_state) = self.pgpu_state.as_mut() {
             if let Some(_timestamps) = pgpu_state.pre_render() {
 
             }
             self.resource_context.advance();
-            let arg = pgpu_state.frame_index();
-            test_scenes::fill(&mut self.scene, &mut self.resource_context, 0, arg);
+            test_scenes::render(&mut self.scene, &mut self.resource_context, 0, self.counter);
+            self.counter += 1;
             pgpu_state.render(&self.scene, &self.resource_context);
         }
         self.handle.invalidate();
