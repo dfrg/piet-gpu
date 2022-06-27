@@ -3,7 +3,7 @@ mod test_scenes;
 
 use druid_shell::kurbo::{Rect, Size};
 use druid_shell::{
-    Application, Cursor, FileDialogToken, FileInfo, KeyEvent, MouseEvent, Region, TimerToken,
+    Application, Cursor, FileDialogToken, FileInfo, IdleToken, KeyEvent, MouseEvent, Region, TimerToken,
     WinHandler, WindowHandle, Scalable,
 };
 use piet_scene::scene::Scene;
@@ -36,6 +36,7 @@ struct WindowState {
 impl WinHandler for WindowState {
     fn connect(&mut self, handle: &WindowHandle) {
         self.handle = handle.clone();
+        self.handle.get_idle_handle().unwrap().schedule_idle(IdleToken::new(0));
     }
 
     fn prepare_paint(&mut self) {}
@@ -51,6 +52,9 @@ impl WinHandler for WindowState {
             println!("render size: {:?}", size);
             self.pgpu_state = Some(render::PgpuState::new(handle, size.width as usize, size.height as usize).unwrap());
         }
+    }
+
+    fn idle(&mut self, _: IdleToken) {
         if let Some(pgpu_state) = self.pgpu_state.as_mut() {
             if let Some(_timestamps) = pgpu_state.pre_render() {
 
@@ -60,7 +64,7 @@ impl WinHandler for WindowState {
             self.counter += 1;
             pgpu_state.render(&self.scene, &self.resource_context);
         }
-        self.handle.invalidate();
+        self.handle.get_idle_handle().unwrap().schedule_idle(IdleToken::new(0));
     }
 
     fn command(&mut self, id: u32) {}
