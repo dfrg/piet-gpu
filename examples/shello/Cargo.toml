@@ -1,0 +1,16 @@
+[package]
+name = "shello"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+druid-shell = { path = "../../../../dshell/druid/druid-shell" }
+piet-gpu-hal = { path = "../../piet-gpu-hal" }
+piet-gpu = { path = "../../piet-gpu" }
+piet-scene = { path = "../../piet-scene" }
+raw-window-handle = "0.3"
+png = "0.16.2"
+rand = "0.7.3"
+roxmltree = "0.13"
+swash = "0.1.4"
+bytemuck = { version = "1.7.2", features = ["derive"] }
