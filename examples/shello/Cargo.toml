@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-druid-shell = { path = "../../../../dshell/druid/druid-shell" }
+druid-shell = { path = "../../../druid_unpiet/druid-shell" }
 piet-gpu-hal = { path = "../../piet-gpu-hal" }
 piet-gpu = { path = "../../piet-gpu" }
 piet-scene = { path = "../../piet-scene" }
