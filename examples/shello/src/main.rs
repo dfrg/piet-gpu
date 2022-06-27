@@ -33,15 +33,18 @@ struct WindowState {
     counter: u64,
 }
 
-impl WinHandler for WindowState {
-    fn connect(&mut self, handle: &WindowHandle) {
-        self.handle = handle.clone();
+impl WindowState {
+    #[cfg(target_os = "macos")]
+    fn schedule_render(&self) {
         self.handle.get_idle_handle().unwrap().schedule_idle(IdleToken::new(0));
     }
 
-    fn prepare_paint(&mut self) {}
+    #[cfg(not(target_os = "macos"))]
+    fn schedule_render(&self) {
+        self.handle.invalidate();
+    }
 
-    fn paint(&mut self, _: &Region) {
+    fn render(&mut self) {
         if self.pgpu_state.is_none() {
             let handle = &self.handle;
             let scale = handle.get_scale().unwrap();
@@ -52,9 +55,6 @@ impl WinHandler for WindowState {
             println!("render size: {:?}", size);
             self.pgpu_state = Some(render::PgpuState::new(handle, size.width as usize, size.height as usize).unwrap());
         }
-    }
-
-    fn idle(&mut self, _: IdleToken) {
         if let Some(pgpu_state) = self.pgpu_state.as_mut() {
             if let Some(_timestamps) = pgpu_state.pre_render() {
 
@@ -64,7 +64,26 @@ impl WinHandler for WindowState {
             self.counter += 1;
             pgpu_state.render(&self.scene, &self.resource_context);
         }
-        self.handle.get_idle_handle().unwrap().schedule_idle(IdleToken::new(0));
+
+    }
+}
+
+impl WinHandler for WindowState {
+    fn connect(&mut self, handle: &WindowHandle) {
+        self.handle = handle.clone();
+        self.schedule_render();
+    }
+
+    fn prepare_paint(&mut self) {}
+
+    fn paint(&mut self, _: &Region) {
+        self.render();
+        self.schedule_render();
+    }
+
+    fn idle(&mut self, _: IdleToken) {
+        self.render();
+        self.schedule_render();
     }
 
     fn command(&mut self, id: u32) {}
