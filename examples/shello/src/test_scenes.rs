@@ -65,10 +65,8 @@ fn basic_scene(fcx: &mut FontContext, scene: &mut Scene, rcx: &mut ResourceConte
     )));
     let mut layout = layout_builder.build();
     layout.break_all_lines(None, parley::layout::Alignment::Start);
-
-    builder.push_transform(Affine::translate(400.0, 400.0));
+    builder.push_transform(Affine::translate(100.0, 400.0));
     render_text(&mut builder, &layout);
     builder.pop_transform();
-
     builder.finish();
 }
