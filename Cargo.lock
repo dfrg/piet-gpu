@@ -98,6 +98,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0d8c1fef690941d3e7788d328517591fecc684c084084702d6ff1641e993699a"
 
 [[package]]
+name = "bodymovin"
+version = "0.1.0"
+source = "git+https://github.com/BrainiumLLC/bodymovin-rs#169185fbded421b481b25ca78c8172c49ebc8394"
+dependencies = [
+ "log",
+ "serde",
+ "serde_json",
+ "serde_repr",
+ "thiserror",
+]
+
+[[package]]
 name = "bytemuck"
 version = "1.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1041,6 +1053,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "piet-motion"
+version = "0.1.0"
+dependencies = [
+ "bodymovin",
+ "piet-scene",
+]
+
+[[package]]
 name = "piet-scene"
 version = "0.1.0"
 dependencies = [
@@ -1293,6 +1313,17 @@ dependencies = [
  "itoa",
  "ryu",
  "serde",
+]
+
+[[package]]
+name = "serde_repr"
+version = "0.1.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a2ad84e47328a31223de7fed7a4f5087f2d6ddfe586cf3ca25b7a165bc0a5aed"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]

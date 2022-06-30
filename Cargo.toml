@@ -6,6 +6,7 @@ members = [
     "piet-gpu-derive",
     "piet-gpu-hal",
     "piet-gpu-types",
+    "piet-motion",
     "piet-scene",
     "tests"
 ]

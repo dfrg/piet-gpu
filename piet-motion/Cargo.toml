@@ -1,0 +1,10 @@
+[package]
+name = "piet-motion"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+piet-scene = { path = "../piet-scene" }
+bodymovin = { git = "https://github.com/BrainiumLLC/bodymovin-rs" }
