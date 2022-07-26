@@ -6,6 +6,10 @@
 #include <ostream>
 #include <new>
 
+enum class PgpuBrushKind {
+  Solid = 0,
+};
+
 enum class PgpuFill {
   NonZero = 0,
   EvenOdd = 1,
@@ -18,8 +22,6 @@ enum class PgpuPathVerb {
   CurveTo = 3,
   Close = 4,
 };
-
-struct PgpuBrush;
 
 /// Encoded (possibly color) outline for a glyph.
 struct PgpuGlyph;
@@ -50,6 +52,22 @@ struct PgpuTransform {
   float yy;
   float dx;
   float dy;
+};
+
+struct PgpuColor {
+  uint8_t r;
+  uint8_t g;
+  uint8_t b;
+  uint8_t a;
+};
+
+union PgpuBrushData {
+  PgpuColor solid;
+};
+
+struct PgpuBrush {
+  PgpuBrushKind kind;
+  PgpuBrushData data;
 };
 
 struct PgpuPoint {

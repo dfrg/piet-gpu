@@ -176,10 +176,12 @@ pub struct PgpuColor {
     pub a: u8,
 }
 
+#[repr(C)]
 pub union PgpuBrushData {
-    pub solid: core::mem::ManuallyDrop<PgpuColor>,
+    pub solid: PgpuColor,
 }
 
+#[repr(C)]
 pub struct PgpuBrush {
     pub kind: PgpuBrushKind,
     pub data: PgpuBrushData,
