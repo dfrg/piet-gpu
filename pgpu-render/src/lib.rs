@@ -317,7 +317,7 @@ pub unsafe extern "C" fn pgpu_scene_builder_fill_path(
         .fill(fill, &brush, brush_transform, (*path).clone());
 }
 
-/// Sets the current absolute transform for the scene builder. The
+/// Appends a scene fragment to the underlying scene or fragment. The
 /// transform parameter represents an absolute transform to apply to
 /// the fragment. If it is nullptr, the fragment will be appended to
 /// the scene with an assumed identity transform regardless of the
